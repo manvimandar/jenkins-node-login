@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        docker { image 'node-14.16.0-alpine3.13'}
+        docker { image 'node:14.16.0-alpine3.13'}
     }
     stages {
         stage('Git Clone'){
