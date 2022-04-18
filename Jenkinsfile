@@ -1,16 +1,38 @@
 pipeline {
     agent {
-        docker { image 'node:14.16.0-alpine3.13'}
+        label 'agent1'
     }
+
+    environment{
+        DOCKERHUB_CREDENTIALS=credentials('dockerhub')
+    }
+
     stages {
-        stage('Git Clone'){
+        stage('gitclone'){
             steps {
-                git credentialsId: 'github-private-key', url: 'git@github.com:manvimandar/jenkins-node-login.git'            }
+               git 'https://github.com/manvimandar/jenkins-node-login.git'
         }
-        stage('Create DockerImage'){
+
+        stage('build'){
             steps {
-                sh 'docker build -t mandarr/node-login:1.1.0 .'
+                sh 'docker build -t mandarr/node-login:1.2.0 .'
             }
+        }
+
+        stage ('login'){
+            sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+        }
+
+        stage ('push') {
+            steps {
+                sh 'docker push mandarr/node-login:1.2.0'
+            }
+        }
+    }
+
+    post {
+        always {
+            sh 'docker logout'
         }
     }
 }
