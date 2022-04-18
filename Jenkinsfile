@@ -3,7 +3,7 @@ pipeline {
         label 'agent1'
     }
 
-    environment{
+    environment {
         DOCKERHUB_CREDENTIALS=credentials('dockerhub')
     }
 
@@ -11,6 +11,7 @@ pipeline {
         stage('gitclone'){
             steps {
                git 'https://github.com/manvimandar/jenkins-node-login.git'
+            }
         }
 
         stage('build'){
@@ -20,7 +21,9 @@ pipeline {
         }
 
         stage ('login'){
-            sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+            steps {
+                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+            }
         }
 
         stage ('push') {
