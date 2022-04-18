@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        label 'agent1'
+        label 'linux'
     }
 
     environment {
@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage('gitclone'){
             steps {
-               git 'https://github.com/manvimandar/jenkins-node-login.git'
+              git credentialsId: 'github-private-key', url: 'git@github.com:manvimandar/jenkins-node-login.git' 
             }
         }
 
